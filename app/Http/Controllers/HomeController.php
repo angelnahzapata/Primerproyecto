@@ -18,8 +18,12 @@ class HomeController extends Controller
     $datos["descripcion_about"]="Empresa dedicada al desarrollo de software";
     $datos["texto_ejemplo"]="Aqui va la descripcion del texto de ejemplo";
 
-    $usuarios=new Pagina();
-    $datos["listadousuarios"]=$usuarios->ObtenerListado();
+    //$usuarios=new Pagina();
+    
+    
+    
+    
+    //$datos["listadousuarios"]=$usuarios->ObtenerListado();
     return view('empresa', $datos);
     }
     }
