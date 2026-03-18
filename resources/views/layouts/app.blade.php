@@ -110,6 +110,32 @@
   <i class ="fa-brands fa-twitch"></i>
 </div>
 
+<div class="modal" tabindex="-1" id="myModal" role="dialog">
+  <form id="editForm" method="POST">
+    @csrf @method('PUT')
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">@yield('titulo_modal')</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type='hidden' name='id' id='id'>
+          <input type='text' name='name' id='name' class="form-control">
+          <input type='text' name='calle' id='calle' class="form-control">
+          <p>Modal body text goes here.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
 </body>
 </html> 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -122,8 +148,83 @@
             { data: 'name' },
             { data: 'email' },
             { data: 'telefono' },
-            { data: 'calle' }
+            { data: 'calle' },
+            { data: 'acciones' }
         ]
     });
     });
+
+    function carga_modal(id, nombre, calle){
+        $('#id').val(id);
+        $('#name').val(nombre);
+        $("#calle").val(calle);
+        $("#editForm").attr('action', '/actualizar-dato/' + id);
+        $('#myModal').modal('show');
+    }
+
+    function desactivar(id) {
+        if (confirm('¿Estás seguro de desactivar este registro?')) {
+        $.ajax({
+            url: '/desactivar-dato',
+            type: 'POST',
+            data: {
+                id: id,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.mensaje);
+                    location.reload();
+                }
+            },
+            error: function (xhr) {
+                alert('Error: ' + xhr.responseJSON.mensaje);
+                console.error(xhr.responseText);
+            }
+        });
+        }
+    }
+
+      function eliminar(id) {
+          if (confirm('¿Estás seguro de eliminar este registro permanentemente?')) {
+          $.ajax({
+            url: '/eliminar-dato',
+            type: 'POST',
+            data: {
+                id: id,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.mensaje);
+                    location.reload();
+                }
+            },
+            error: function (xhr) {
+                alert('Error: ' + xhr.responseJSON.mensaje);
+                console.error(xhr.responseText);
+            }
+          });
+        }
+      }
+
+    $("#editForm").on('submit', function(e){
+        e.preventDefault();
+        alert($(this).serialize());
+        $.ajax({
+            url:$(this).attr('action'),
+            type:'POST',
+            method:'PUT',
+            data:$(this).serialize(),
+            success: function(response){
+                $("#myModal").modal('hide');
+                location.reload();
+            },
+            error: function(xhr){
+                console.error(xhr.responseText);
+            }
+        })
+    })
+
+
 </script>
