@@ -7,20 +7,24 @@ use Illuminate\Support\Facades\App;
 use App\Models\User;
 use App\Models\Pagina;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
+
+use function Symfony\Component\String\b;
 
 class HomeController extends Controller
 {
-    public function empresa()
+    public function index()
     {
-    $datos["nombre"]="Angel NAh Zapata";
+    $paginas=Pagina::orderBy('id','desc')->paginate(10);
+    $datos["nombre"]="Angel Nah Zapata";
     $datos["fecha"]="26-15-15";
     $datos["actividad"]="Desarrollo de Software";
     $datos["descripcion_about"]="Empresa dedicada al desarrollo de software";
     $datos["texto_ejemplo"]="Aqui va la descripcion del texto de ejemplo";
-
+    $datos["paginas"] = $paginas;
     $usuarios=new Pagina();
-    $datos["listadousuarios"] = $usuarios->ObtenerListado();
-    return view('empresa', $datos);
+    //$datos["listadousuarios"] = $usuarios->ObtenerListado();
+    return view('index', $datos);
     }
 
     public function update(Request $request) {
@@ -33,6 +37,66 @@ class HomeController extends Controller
         }
         return $respuesta;
     }
+
+    public function guardarpagina(Request $request)
+    {
+    Pagina::create($request->all());
+    //$paginas->name = $request->name;
+    //$paginas->email = $request->email;
+    //$paginas->telefono = $request->telefono;
+    //$paginas->calle= $request->calle;
+    //$paginas->password=bcrypt('123456');
+    //$paginas->save();
+    //return redirect('/pagina');
+    return redirect()->route('pagina.index');
+    }
+
+    public function nuevapagina()
+    {
+    $datos["nombre"]="Angel Nah Zapata";
+    $datos["fecha"]="26-15-15";
+    $datos["actividad"]="Desarrollo de Software";
+    $datos["descripcion_about"]="Empresa dedicada al desarrollo de software";
+    $datos["texto_ejemplo"]="Aqui va la descripcion del texto de ejemplo";
+    $datos['texto']="Aqui se mostrara el formulario para crear una nueva pagina";
+    return view('frmnuevapagina', $datos);
+    }
+
+
+   // public function updatepaginaform(Request $request, $id)
+    //{
+   // $paginas = Pagina::find($id);
+    //$paginas->name = $request->name;
+    //$paginas->email = $request->email;
+    //$paginas->telefono = $request->telefono;
+    //$paginas->calle= $request->calle;
+    //$paginas->password=bcrypt('123456');
+    //$paginas->save();
+
+    //$datos['id'] = $id;
+    //$datos["nombre"]="Angel Nah Zapata";
+    //$datos["fecha"]="26-15-15";
+    //$datos["actividad"]="Desarrollo de Software";
+    //$datos["descripcion_about"]="Empresa dedicada al desarrollo de software";
+    //$datos["texto_ejemplo"]="Aqui va la descripcion del texto de ejemplo";
+    //$datos["paginas"] = $paginas;
+
+    //return redirect('detalle', $datos);
+    //}
+public function updatepaginaform(Request $request, $id)
+{
+    $paginas = Pagina::find($id);
+    $paginas->name = $request->name;
+    $paginas->email = $request->email;
+    $paginas->telefono = $request->telefono;
+    $paginas->calle = $request->calle;
+    $paginas->password = bcrypt('123456');
+    $paginas->save();
+
+    return redirect()->route('pagina.detalle', $id);
+}
+
+    
 
     public function desactivar(Request $request) {
     $usuarios = new Pagina();
@@ -53,6 +117,39 @@ public function eliminar(Request $request) {
         return response()->json(['success' => true, 'mensaje' => 'Registro eliminado']);
     }
     return response()->json(['success' => false, 'mensaje' => 'Registro no encontrado'], 404);
+}
+
+public function detalle(Pagina $id)
+{
+    //$paginas = Pagina::findOrFail($id);
+
+    $datos["nombre"] = "Angel Nah Zapata";
+    $datos["fecha"] = "2026-12-15";
+    $datos["actividad"] = "Desarrollo de Software";
+    $datos["descripcion_about"] = "Empresa dedicada al desarrollo de software";
+    $datos["texto_ejemplo"] = "Aqui va la descripcion del texto de ejemplo";
+    $datos["paginas"] = $id;
+
+    return view('detalle', $datos);
+}
+
+public function edit($id)
+{
+    $pagina = Pagina::find($id);
+    $datos["paginas"] = $pagina;
+    $datos["nombre"] = "Angel Nah Zapata";
+    $datos["fecha"] = "2026-12-15";
+    $datos["actividad"] = "Desarrollo de Software";
+    $datos["descripcion_about"] = "Empresa dedicada al desarrollo de software";
+    $datos["texto_ejemplo"] = "Aqui va la descripcion del texto de ejemplo";
+    return view('edit', $datos);
+}
+
+public function destroy($id)
+{
+    $pagina = Pagina::findOrFail($id);
+    $pagina->delete();
+    return redirect()->route('pagina.index');
 }
 
 

@@ -27,6 +27,34 @@ Route::get('post/about/{param?}/{name}', [PostController::class, 'about']);
 
 Route::get('/empresa', [HomeController::class, 'empresa'])->name('empresa');
 
+Route::get('/pagina', [HomeController::class, 'index'])->name('pagina.index');
+
+Route::get('/pagina/create', [HomeController::class, 'nuevapagina'])->name('pagina.create');
+
+Route::post('/pagina', [HomeController::class, 'guardarpagina'])->name('pagina.nueva');
+
+Route::get('/pagina/edit/{id}', [HomeController::class, 'edit']);
+
+Route::put('/pagina/actualizar/{pagina}', [HomeController::class, 'updatepaginaform']);
+Route::put('/pagina/actualizar/{id}', [HomeController::class, 'updatepaginaform'])->name('pagina.update');
+
+Route::get('/pagina/{id}', [HomeController::class, 'detalle'])->name('pagina.detalle');
+
+Route::get('/pagina/edit/{id}', [HomeController::class, 'edit'])->name('pagina.edit');
+Route::delete('/pagina/{id}',   [HomeController::class, 'destroy'])->name('pagina.delete');
+
+Route::get('/index', function(){
+    $datos["nombre"]="Angel NAh Zapata";
+    $datos["fecha"]="26-15-15";
+    $datos["actividad"]="Desarrollo de Software";
+    $datos["descripcion_about"]="Empresa dedicada al desarrollo de software";
+    $datos["texto_ejemplo"]="Aqui va la descripcion del texto de ejemplo";
+    return view('index', $datos);
+
+})->name('index');
+
+
+
 //definimos el metodo para crear un nuevo registro
 Route::get('nuevoregistro', function (){
     $pagina = new Pagina();

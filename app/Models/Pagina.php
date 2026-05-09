@@ -45,4 +45,9 @@ class Pagina extends Model
         $registro=Pagina::find($id);
         return $registro;
     }
+
+    //guardar todo menos el campo is_active
+    protected $guarded = [
+        'is_active',
+    ];
 }
